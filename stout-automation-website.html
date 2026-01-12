@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stout Automation - Your Workflow, On Autopilot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #b8b8b8;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        /* Circuit Board Background */
+        .circuit-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        /* Brand Name Top Left */
+        .brand-name {
+            position: fixed;
+            top: 1.5rem;
+            left: 2rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            z-index: 200;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(26, 26, 26, 0.95);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #3498db;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+        }
+
+        nav a {
+            color: #e8e8e8;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #3498db;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .hero h2 {
+            font-size: 6rem;
+            font-weight: 900;
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+        }
+
+        .hero h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 0;
+            display: none;
+        }
+
+        .hero-description {
+            background: rgba(26, 26, 26, 0.9);
+            color: #e8e8e8;
+            padding: 2.5rem;
+            border-radius: 12px;
+            max-width: 800px;
+            margin: 2rem auto;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .hero-description h3 {
+            color: #3498db;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .cta-button {
+            background: #3498db;
+            color: white;
+            padding: 1.2rem 3rem;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .cta-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+        }
+
+        /* Product Page */
+        .product-page {
+            display: none;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-page.active {
+            display: block;
+        }
+
+        .product-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .product-header h1 {
+            font-size: 3.5rem;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .product-section {
+            background: rgba(26, 26, 26, 0.9);
+            color: #e8e8e8;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .product-section h2 {
+            color: #3498db;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-section p, .product-section ul {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .product-section ul {
+            list-style-position: inside;
+            margin-top: 1rem;
+        }
+
+        .video-placeholder {
+            background: #2c3e50;
+            height: 400px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e8e8e8;
+            font-size: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        /* Reviews Section */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .review-card {
+            background: #2c3e50;
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .review-card .stars {
+            color: #f39c12;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-card p {
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .review-card .reviewer {
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .view-all-reviews {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .view-all-reviews:hover {
+            color: #2980b9;
+        }
+
+        /* Pricing & Contact */
+        .pricing-contact {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .pricing-box, .contact-box {
+            background: #2c3e50;
+            padding: 2.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .price {
+            font-size: 3rem;
+            color: #3498db;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .contact-info {
+            text-align: left;
+            margin-top: 1.5rem;
+        }
+
+        .contact-info p {
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        .contact-info a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(26, 26, 26, 0.95);
+            color: #e8e8e8;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 2px solid #3498db;
+        }
+
+        /* Modal */
+        .modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            color: #e8e8e8;
+            padding: 3rem;
+            border-radius: 12px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid #3498db;
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.4);
+        }
+
+        .modal-content h2 {
+            color: #3498db;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .modal-content h3 {
+            color: #3498db;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p, .modal-content ul {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content ul {
+            margin-left: 2rem;
+        }
+
+        .accept-button {
+            background: #3498db;
+            color: white;
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 2rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .accept-button:hover {
+            background: #2980b9;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero h2 { font-size: 2rem; }
+            .hero h3 { font-size: 1.8rem; }
+            .pricing-contact { grid-template-columns: 1fr; }
+            nav ul { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Circuit Board Background -->
+    <svg class="circuit-bg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <linearGradient id="pulseGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#3498db;stop-opacity:0" />
+                <stop offset="50%" style="stop-color:#3498db;stop-opacity:0.9" />
+                <stop offset="100%" style="stop-color:#3498db;stop-opacity:0" />
+            </linearGradient>
+            <filter id="glow">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+        
+        <!-- Circuit paths -->
+        <g stroke="#c0c0c0" stroke-width="2" fill="none">
+            <!-- Main radial paths from center -->
+            <path d="M 960 540 L 1200 540 L 1200 300" class="circuit-path" />
+            <path d="M 960 540 L 720 540 L 720 780" class="circuit-path" />
+            <path d="M 960 540 L 960 200" class="circuit-path" />
+            <path d="M 960 540 L 960 880" class="circuit-path" />
+            <path d="M 960 540 L 1400 300" class="circuit-path" />
+            <path d="M 960 540 L 520 780" class="circuit-path" />
+            <path d="M 960 540 L 1500 540" class="circuit-path" />
+            <path d="M 960 540 L 420 540" class="circuit-path" />
+            
+            <!-- Additional complex paths -->
+            <path d="M 960 540 L 1300 400 L 1450 250" class="circuit-path" />
+            <path d="M 960 540 L 620 680 L 450 820" class="circuit-path" />
+            <path d="M 960 540 L 1100 700 L 1250 850" class="circuit-path" />
+            <path d="M 960 540 L 820 380 L 670 230" class="circuit-path" />
+            <path d="M 960 540 L 1350 650 L 1550 750" class="circuit-path" />
+            <path d="M 960 540 L 570 430 L 370 330" class="circuit-path" />
+            <path d="M 960 540 L 1050 350 L 1150 180" class="circuit-path" />
+            <path d="M 960 540 L 870 730 L 770 900" class="circuit-path" />
+            
+            <!-- Connecting horizontal paths -->
+            <path d="M 420 540 L 300 540 L 300 350" class="circuit-path" />
+            <path d="M 1500 540 L 1620 540 L 1620 730" class="circuit-path" />
+            <path d="M 720 780 L 600 780 L 600 920" class="circuit-path" />
+            <path d="M 1200 300 L 1320 300 L 1320 160" class="circuit-path" />
+            
+            <!-- Cross connections -->
+            <path d="M 720 540 L 600 420 L 480 300" class="circuit-path" />
+            <path d="M 1200 540 L 1320 660 L 1440 780" class="circuit-path" />
+            <path d="M 960 200 L 1080 150 L 1200 100" class="circuit-path" />
+            <path d="M 960 880 L 840 930 L 720 980" class="circuit-path" />
+            
+            <!-- Additional vertical branches -->
+            <path d="M 1200 300 L 1200 150 L 1300 100" class="circuit-path" />
+            <path d="M 720 780 L 720 930 L 620 980" class="circuit-path" />
+            <path d="M 960 200 L 860 150 L 760 100" class="circuit-path" />
+            <path d="M 960 880 L 1060 930 L 1160 980" class="circuit-path" />
+            
+            <!-- Diagonal cross-sections -->
+            <path d="M 520 780 L 400 860 L 280 940" class="circuit-path" />
+            <path d="M 1400 300 L 1520 220 L 1640 140" class="circuit-path" />
+        </g>
+        
+        <!-- Pulse paths (animated) -->
+        <g stroke="url(#pulseGradient)" stroke-width="4" fill="none" opacity="0" filter="url(#glow)">
+            <path d="M 960 540 L 1200 540 L 1200 300" class="pulse-path" />
+            <path d="M 960 540 L 720 540 L 720 780" class="pulse-path" />
+            <path d="M 960 540 L 960 200" class="pulse-path" />
+            <path d="M 960 540 L 960 880" class="pulse-path" />
+            <path d="M 960 540 L 1400 300" class="pulse-path" />
+            <path d="M 960 540 L 520 780" class="pulse-path" />
+            <path d="M 960 540 L 1500 540" class="pulse-path" />
+            <path d="M 960 540 L 420 540" class="pulse-path" />
+            <path d="M 960 540 L 1300 400 L 1450 250" class="pulse-path" />
+            <path d="M 960 540 L 620 680 L 450 820" class="pulse-path" />
+            <path d="M 960 540 L 1100 700 L 1250 850" class="pulse-path" />
+            <path d="M 960 540 L 820 380 L 670 230" class="pulse-path" />
+            <path d="M 960 540 L 1350 650 L 1550 750" class="pulse-path" />
+            <path d="M 960 540 L 570 430 L 370 330" class="pulse-path" />
+            <path d="M 960 540 L 1050 350 L 1150 180" class="pulse-path" />
+            <path d="M 960 540 L 870 730 L 770 900" class="pulse-path" />
+        </g>
+        
+        <!-- Circuit nodes -->
+        <circle cx="960" cy="540" r="10" fill="#3498db" filter="url(#glow)" />
+        <circle cx="1200" cy="540" r="6" fill="#c0c0c0" />
+        <circle cx="1200" cy="300" r="6" fill="#c0c0c0" />
+        <circle cx="720" cy="540" r="6" fill="#c0c0c0" />
+        <circle cx="720" cy="780" r="6" fill="#c0c0c0" />
+        <circle cx="420" cy="540" r="5" fill="#c0c0c0" />
+        <circle cx="1500" cy="540" r="5" fill="#c0c0c0" />
+        <circle cx="960" cy="200" r="5" fill="#c0c0c0" />
+        <circle cx="960" cy="880" r="5" fill="#c0c0c0" />
+        <circle cx="1400" cy="300" r="5" fill="#c0c0c0" />
+        <circle cx="520" cy="780" r="5" fill="#c0c0c0" />
+    </svg>
+
+    <!-- Brand Name -->
+    <div class="brand-name">Stout Automation</div>
+
+    <!-- User Agreement Modal -->
+    <div id="userAgreementModal" class="modal">
+        <div class="modal-content">
+            <h2>Terms of Service & User Agreement</h2>
+            <p><strong>Last Updated: January 2026</strong></p>
+            
+            <h3>1. Acceptance of Terms</h3>
+            <p>By accessing and using Stout Automation services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.</p>
+            
+            <h3>2. Services Provided</h3>
+            <p>Stout Automation provides digital process automation solutions, including but not limited to Discord bot development and custom automation tools. Services are provided "as is" and we reserve the right to modify or discontinue services at any time.</p>
+            
+            <h3>3. Payment Terms</h3>
+            <ul>
+                <li>All payments are due as specified in your service agreement</li>
+                <li>Subscription services are billed monthly unless otherwise stated</li>
+                <li>Refunds are handled on a case-by-case basis</li>
+            </ul>
+            
+            <h3>4. User Responsibilities</h3>
+            <ul>
+                <li>You are responsible for maintaining the confidentiality of your account</li>
+                <li>You agree to use our services in compliance with all applicable laws</li>
+                <li>You will not use our services for any illegal or unauthorized purpose</li>
+            </ul>
+            
+            <h3>5. Limitation of Liability</h3>
+            <p>Stout Automation shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use our services.</p>
+            
+            <h3>6. Discord Terms Compliance</h3>
+            <p>All Discord bots and automation tools must comply with Discord's Terms of Service and Community Guidelines. Users are responsible for ensuring their use of our services complies with Discord's policies.</p>
+            
+            <h3>7. Privacy</h3>
+            <p>We collect and use information as described in our Privacy Policy. By using our services, you consent to our data practices.</p>
+            
+            <h3>8. Modifications</h3>
+            <p>We reserve the right to modify these terms at any time. Continued use of our services after changes constitutes acceptance of the new terms.</p>
+            
+            <h3>9. Contact</h3>
+            <p>For questions about these terms, please contact us through the information provided on our website.</p>
+            
+            <button class="accept-button" onclick="acceptTerms()">I Accept</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#" onclick="showPage('home')">Home</a></li>
+            <li><a href="#" onclick="showPage('togebot')">TogeBot</a></li>
+        </ul>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page">
+        <section class="hero">
+            <h2>Your Workflow, On Autopilot.</h2>
+            <div class="hero-description">
+                <h3>Simply Seamless</h3>
+                <p>At Stout Automation, we specialize in transforming complex digital processes into effortless, automated workflows. From Discord bot development to custom business solutions, we develop intelligent automation that saves time, reduces errors, and lets you focus on what matters most.</p>
+                <p>Whether you're managing a community, running a business, or streamlining operations, our tailored solutions integrate seamlessly into your existing systems. Professional, reliable, and built for scale.</p>
+            </div>
+            <button class="cta-button" onclick="showPage('togebot')">Explore Our Solutions</button>
+        </section>
+    </div>
+
+    <!-- TogeBot Product Page -->
+    <div id="togebotPage" class="product-page">
+        <div class="product-header">
+            <h1>TogeBot</h1>
+            <p style="font-size: 1.3rem; color: #2c3e50;">Automated Discord Betting Management</p>
+        </div>
+
+        <div class="product-section">
+            <h2>What is TogeBot?</h2>
+            <p>TogeBot revolutionizes in-game betting management for Discord servers. Previously, admins spent countless hours manually collecting bet information through tickets, typing data, and managing spreadsheets. TogeBot automates this entire workflow with an intuitive button-based system that captures all betting data and seamlessly transfers it to Google Sheets.</p>
+        </div>
+
+        <div class="product-section">
+            <h2>Example Workflow</h2>
+            <div class="video-placeholder">
+                [Demo Video: Watch TogeBot in Action]
+            </div>
+            <ul>
+                <li>User clicks "Place Bet" button in Discord</li>
+                <li>Interactive form collects all necessary information</li>
+                <li>Data is automatically validated and formatted</li>
+                <li>Information instantly populates your Google Sheet</li>
+                <li>Admins receive confirmation and can manage bets effortlessly</li>
+            </ul>
+        </div>
+
+        <div class="product-section">
+            <h2>Key Features</h2>
+            <ul>
+                <li>Fully automated data collection - no manual typing required</li>
+                <li>Direct Google Sheets integration for easy tracking</li>
+                <li>User-friendly button interface</li>
+                <li>Real-time bet logging and management</li>
+                <li>Customizable to your server's specific needs</li>
+                <li>Reduces admin workload by 90%</li>
+            </ul>
+        </div>
+
+        <div class="product-section">
+            <h2>Trusted Reviews</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"TogeBot saved us hours every week. What used to take 5-10 minutes per bet now happens instantly. Absolutely worth it."</p>
+                    <div class="reviewer">- Server Admin, Gaming Community</div>
+                </div>
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"The automation is flawless. Our members love how easy it is to place bets, and we love how easy it is to manage them."</p>
+                    <div class="reviewer">- Community Manager</div>
+                </div>
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Best investment we've made for our Discord server. Professional, reliable, and the developer is incredibly responsive."</p>
+                    <div class="reviewer">- Discord Server Owner</div>
+                </div>
+            </div>
+            <a href="#" class="view-all-reviews">View All Reviews on Google →</a>
+        </div>
+
+        <div class="product-section">
+            <h2>Pricing & Contact</h2>
+            <div class="pricing-contact">
+                <div class="pricing-box">
+                    <h3>Simple Pricing</h3>
+                    <div class="price">$10<span style="font-size: 1.5rem;">/month</span></div>
+                    <p>Full access to TogeBot with ongoing support and updates</p>
+                </div>
+                <div class="contact-box">
+                    <h3>Get Started</h3>
+                    <div class="contact-info">
+                        <p><strong>Email:</strong> <a href="mailto:contact@stoutautomation.com">contact@stoutautomation.com</a></p>
+                        <p><strong>Discord:</strong> <a href="#">@StoutDev</a></p>
+                        <p><strong>Phone:</strong> <a href="tel:+15551234567">(555) 123-4567</a></p>
+                    </div>
+                    <p style="margin-top: 2rem;">Reach out to discuss your needs and get TogeBot set up for your server.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Built by Austin Stout | Stout Automation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">© 2026 All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // Page navigation
+        function showPage(pageName) {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('togebotPage').classList.remove('active');
+            
+            if (pageName === 'home') {
+                document.getElementById('homePage').style.display = 'block';
+            } else if (pageName === 'togebot') {
+                document.getElementById('togebotPage').classList.add('active');
+            }
+            
+            window.scrollTo(0, 0);
+        }
+
+        // User Agreement Modal
+        function acceptTerms() {
+            const modal = document.getElementById('userAgreementModal');
+            modal.style.display = 'none';
+        }
+
+        // Check if terms already accepted - show modal on first visit
+        window.onload = function() {
+            // Always show modal on page load (removed localStorage check for now)
+            document.getElementById('userAgreementModal').style.display = 'flex';
+            
+            // Animate circuit pulses
+            animatePulses();
+        };
+
+        // Circuit pulse animation
+        function animatePulses() {
+            const pulsePaths = document.querySelectorAll('.pulse-path');
+            
+            function triggerPulse() {
+                pulsePaths.forEach((path, index) => {
+                    setTimeout(() => {
+                        path.style.opacity = '1';
+                        path.style.transition = 'opacity 0.5s ease-in';
+                        
+                        setTimeout(() => {
+                            path.style.transition = 'opacity 2s ease-out';
+                            path.style.opacity = '0';
+                        }, 500);
+                    }, index * 150);
+                });
+            }
+            
+            // Initial pulse
+            setTimeout(triggerPulse, 1000);
+            
+            // Repeat every 5 seconds
+            setInterval(triggerPulse, 5000);
+        }
+    </script>
+</body>
+</html>
